@@ -14,10 +14,12 @@ public class ScaleWindow : BaseWindow
             {
                 mDuration = 1;
             }
+
             return mDuration;
         }
         set { mDuration = value; }
     }
+
     public override void OnResume()
     {
         base.OnResume();
@@ -27,7 +29,9 @@ public class ScaleWindow : BaseWindow
         tween.from = tween.value;
         tween.to = Vector3.one;
 
-        tween.duration = tween.value== Vector3.zero?duration: tween.value.magnitude * duration / Vector3.one.magnitude;
+        tween.duration = tween.value == Vector3.zero
+            ? duration
+            : tween.value.magnitude * duration / Vector3.one.magnitude;
 
         tween.onFinished.Clear();
         tween.ResetToBeginning();
@@ -41,11 +45,13 @@ public class ScaleWindow : BaseWindow
         tween.value = tween.tweenFactor > 0 ? tween.value : Vector3.one;
         tween.from = tween.value;
         tween.to = Vector3.zero;
-        tween.duration = tween.value == Vector3.one ? duration : (Vector3.one- tween.value).magnitude * duration / Vector3.one.magnitude; 
+        tween.duration = tween.value == Vector3.one
+            ? duration
+            : (Vector3.one - tween.value).magnitude * duration / Vector3.one.magnitude;
 
         tween.ResetToBeginning();
         tween.onFinished.Clear();
-        tween.onFinished.Add(new EventDelegate(delegate () { base.OnPause(); }));
+        tween.onFinished.Add(new EventDelegate(delegate() { base.OnPause(); }));
         tween.PlayForward();
     }
 
@@ -56,13 +62,13 @@ public class ScaleWindow : BaseWindow
         tween.value = tween.tweenFactor > 0 ? tween.value : Vector3.one;
         tween.from = tween.value;
         tween.to = Vector3.zero;
-        tween.duration = tween.value == Vector3.one ? duration : (Vector3.one - tween.value).magnitude * duration / Vector3.one.magnitude; 
+        tween.duration = tween.value == Vector3.one
+            ? duration
+            : (Vector3.one - tween.value).magnitude * duration / Vector3.one.magnitude;
 
         tween.ResetToBeginning();
         tween.onFinished.Clear();
-        tween.onFinished.Add(new EventDelegate(delegate () { base.OnExit(); }));
+        tween.onFinished.Add(new EventDelegate(delegate() { base.OnExit(); }));
         tween.PlayForward();
     }
-
 }
-

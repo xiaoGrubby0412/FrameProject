@@ -1,5 +1,4 @@
-﻿
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Runtime;
@@ -55,12 +54,14 @@ public class KeyedPriorityQueue<K, V, P> where V : class
         {
             this.heap.Add(this.placeHolder);
         }
+
         while ((num > 1) && this.IsHigher(priority, this.heap[num2].Priority))
         {
             this.heap[num] = this.heap[num2];
             num = num2;
             num2 = num / 2;
         }
+
         this.heap[num] = new HeapNode<K, V, P>(key, value, priority);
         V newHead = this.heap[1].Value;
         if (!newHead.Equals(local))
@@ -75,6 +76,7 @@ public class KeyedPriorityQueue<K, V, P> where V : class
         {
             return this.Search(priority, 1, match);
         }
+
         return default(V);
     }
 
@@ -87,10 +89,12 @@ public class KeyedPriorityQueue<K, V, P> where V : class
         {
             j = num;
         }
+
         if ((num2 <= this.size) && this.IsHigher(this.heap[num2].Priority, this.heap[j].Priority))
         {
             j = num2;
         }
+
         if (j != i)
         {
             this.Swap(i, j);
@@ -109,6 +113,7 @@ public class KeyedPriorityQueue<K, V, P> where V : class
         {
             return this.heap[1].Value;
         }
+
         return default(V);
     }
 
@@ -142,10 +147,12 @@ public class KeyedPriorityQueue<K, V, P> where V : class
                     {
                         this.RaiseHeadChangedEvent(oldHead, local3);
                     }
+
                     return local2;
                 }
             }
         }
+
         return default(V);
     }
 
@@ -158,17 +165,20 @@ public class KeyedPriorityQueue<K, V, P> where V : class
             {
                 local = this.heap[i].Value;
             }
+
             int num = 2 * i;
             int num2 = num + 1;
             if ((local == null) && (num <= this.size))
             {
                 local = this.Search(priority, num, match);
             }
+
             if ((local == null) && (num2 <= this.size))
             {
                 local = this.Search(priority, num2, match);
             }
         }
+
         return local;
     }
 
@@ -181,10 +191,7 @@ public class KeyedPriorityQueue<K, V, P> where V : class
 
     public int Count
     {
-        get
-        {
-            return this.size;
-        }
+        get { return this.size; }
     }
 
     public ReadOnlyCollection<K> Keys
@@ -196,6 +203,7 @@ public class KeyedPriorityQueue<K, V, P> where V : class
             {
                 list.Add(this.heap[i].Key);
             }
+
             return new ReadOnlyCollection<K>(list);
         }
     }
@@ -209,6 +217,7 @@ public class KeyedPriorityQueue<K, V, P> where V : class
             {
                 list.Add(this.heap[i].Value);
             }
+
             return new ReadOnlyCollection<V>(list);
         }
     }
@@ -219,6 +228,7 @@ public class KeyedPriorityQueue<K, V, P> where V : class
         public KK Key;
         public VV Value;
         public PP Priority;
+
         public HeapNode(KK key, VV value, PP priority)
         {
             this.Key = key;
@@ -226,5 +236,4 @@ public class KeyedPriorityQueue<K, V, P> where V : class
             this.Priority = priority;
         }
     }
-
 }

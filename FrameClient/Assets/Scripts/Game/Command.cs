@@ -11,14 +11,34 @@ public class Command
     private byte[] mData;
     private long mTime;
 
-    public long id { get { return mID; } }
+    public long id
+    {
+        get { return mID; }
+    }
 
-    public long frame { get { return mFrame; } }
-    public int type { get { return mType; } }
-    public byte[] data { get { return mData; } }
-    public long time { get { return mTime; } }
+    public long frame
+    {
+        get { return mFrame; }
+    }
 
-    public Command() { }
+    public int type
+    {
+        get { return mType; }
+    }
+
+    public byte[] data
+    {
+        get { return mData; }
+    }
+
+    public long time
+    {
+        get { return mTime; }
+    }
+
+    public Command()
+    {
+    }
 
 
     public Command(long id, long frame, int type, byte[] data, long time)
@@ -53,4 +73,3 @@ public class Command
         return ProtoTransfer.DeserializeProtoBuf(mData, type);
     }
 }
-

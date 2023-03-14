@@ -7,38 +7,33 @@ using Mono.Xml;
 using System.Security;
 using PBMessage;
 
-public class GameScene :State{
+public class GameScene : State
+{
+    private GameSceneType mSceneType;
 
-	private GameSceneType mSceneType;
+    public GameSceneType sceneType
+    {
+        get { return mSceneType; }
+    }
 
-	public GameSceneType sceneType { get{ return mSceneType;}}
 
-	
-	
-	public GameScene(GameSceneType varSceneType):base(varSceneType.ToString())
-	{
-		mSceneType = varSceneType;
-	}
+    public GameScene(GameSceneType varSceneType) : base(varSceneType.ToString())
+    {
+        mSceneType = varSceneType;
+    }
 
     public override void OnEnter()
     {
         SceneManager.LoadScene(name);
-       
     }
 
-	public override void OnUpdate ()
-	{
-		base.OnUpdate ();
-		
-	}
+    public override void OnUpdate()
+    {
+        base.OnUpdate();
+    }
 
-	public override void OnExit ()
-	{
-		
-
-		base.OnExit ();
-	
-	}
-
-
+    public override void OnExit()
+    {
+        base.OnExit();
+    }
 }

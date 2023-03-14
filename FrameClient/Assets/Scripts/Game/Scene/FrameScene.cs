@@ -11,18 +11,16 @@ public class FrameScene : GameScene, IReceiverHandler
 {
     public FrameScene() : base(GameSceneType.FrameScene)
     {
-       
     }
 
-    private int mFrameInterval = 100;//帧时长
+    private int mFrameInterval = 100; //帧时长
     private long mCurrentFrame = 1; //当前帧
-    private long mSentFrame = 0;   //已发送帧（LockStep）
+    private long mSentFrame = 0; //已发送帧（LockStep）
 
     private bool mBegin = false;
-   
-    private long mFrameTime;   //当前帧的服务器时间
-   
-  
+
+    private long mFrameTime; //当前帧的服务器时间
+
 
     private Queue<Command> mCommandQueue = new Queue<Command>();
     private Dictionary<long, List<Command>> mFrameDic = new Dictionary<long, List<Command>>();
@@ -30,6 +28,7 @@ public class FrameScene : GameScene, IReceiverHandler
     private Thread mTickThread;
 
     private long mPingTime = 0;
+
     public override void OnEnter()
     {
         base.OnEnter();
@@ -42,14 +41,13 @@ public class FrameScene : GameScene, IReceiverHandler
         RegisterReceiver();
 
         WindowManager.GetSingleton().Open<UI_Main>();
-      
     }
 
     public override void OnUpdate()
     {
-        base.OnUpdate(); 
+        base.OnUpdate();
 
-        if(Time.frameCount % 30 ==0 && PlayerManager.GetSingleton().mReady)
+        if (Time.frameCount % 30 == 0 && PlayerManager.GetSingleton().mReady)
         {
             GM_Request sendData = SharedValue<GM_Request>.sData;
             sendData.id = PlayerManager.GetSingleton().mRoleId;
@@ -64,9 +62,9 @@ public class FrameScene : GameScene, IReceiverHandler
         mCommandQueue.Clear();
         ClientService.GetSingleton().onDebug -= OnDebug;
 
-        UnRegisterReceiver();  
+        UnRegisterReceiver();
 
-        if(mTickThread!=null)
+        if (mTickThread != null)
         {
             mTickThread.Abort();
             mTickThread = null;
@@ -100,6 +98,7 @@ public class FrameScene : GameScene, IReceiverHandler
 
         EventDispatch.Dispatch(EventID.Connect_Return, 0);
     }
+
     private void OnConnectFail()
     {
         Debug.Log("Connect server fail!");
@@ -108,7 +107,7 @@ public class FrameScene : GameScene, IReceiverHandler
 
     private void OnDebug(string message)
     {
-        if(string.IsNullOrEmpty(message)==false)
+        if (string.IsNullOrEmpty(message) == false)
         {
             Debug.Log(message);
         }
@@ -117,8 +116,7 @@ public class FrameScene : GameScene, IReceiverHandler
 
     void CreatePlayerCharacter(PlayerInfo info)
     {
-        
-        if(info == null)
+        if (info == null)
         {
             return;
         }
@@ -144,11 +142,15 @@ public class FrameScene : GameScene, IReceiverHandler
     public void RegisterReceiver()
     {
         #region Event
+
         EventDispatch.RegisterReceiver<int>(EventID.Ready_Request, OnReadyRequest);
         EventDispatch.RegisterReceiver<EventConnect>(EventID.Connect_Request, OnConnectRequest);
         EventDispatch.RegisterReceiver<Command>(EventID.AddCommand, OnAddCommand);
+
         #endregion
+
         #region Message
+
         MessageDispatch.RegisterReceiver<GM_Accept>(MessageID.GM_ACCEPT_SC, OnAccept);
         MessageDispatch.RegisterReceiver<GM_Connect>(MessageID.GM_CONNECT_SC, OnConnectReturn);
         MessageDispatch.RegisterReceiver<GM_Connect>(MessageID.GM_CONNECT_BC, OnConnectBC);
@@ -157,39 +159,47 @@ public class FrameScene : GameScene, IReceiverHandler
         MessageDispatch.RegisterReceiver<GM_Begin>(MessageID.GM_BEGIN_BC, OnBeginBC);
         MessageDispatch.RegisterReceiver<GM_Frame_BC>(MessageID.GM_FRAME_BC, OnFrameBC);
         MessageDispatch.RegisterReceiver<GM_Return>(MessageID.GM_PING_SC, OnPingReturn);
+
         #endregion
 
         #region Command
+
         CommandDispatch.RegisterReceiver<CMD_ReleaseSkill>(CommandID.RELEASE_SKILL, OnCommandReleaseSkill);
         CommandDispatch.RegisterReceiver<CMD_MoveToPoint>(CommandID.MOVE_TO_POINT, OnCommandMoveToPoint);
         CommandDispatch.RegisterReceiver<CMD_CreateMonster>(CommandID.CREATE_MONSTER, OnCreateMonster);
-      
+
         #endregion
     }
 
     public void UnRegisterReceiver()
     {
         #region Event
+
         EventDispatch.UnRegisterReceiver<int>(EventID.Ready_Request, OnReadyRequest);
         EventDispatch.UnRegisterReceiver<EventConnect>(EventID.Connect_Request, OnConnectRequest);
         EventDispatch.UnRegisterReceiver<Command>(EventID.AddCommand, OnAddCommand);
+
         #endregion
+
         #region Message
+
         MessageDispatch.UnRegisterReceiver<GM_Accept>(MessageID.GM_ACCEPT_SC, OnAccept);
         MessageDispatch.UnRegisterReceiver<GM_Connect>(MessageID.GM_CONNECT_SC, OnConnectReturn);
         MessageDispatch.UnRegisterReceiver<GM_Connect>(MessageID.GM_CONNECT_BC, OnConnectBC);
         MessageDispatch.UnRegisterReceiver<GM_Disconnect>(MessageID.GM_DISCONNECT_BC, OnDisconnectBC);
         MessageDispatch.UnRegisterReceiver<GM_Ready>(MessageID.GM_READY_BC, OnReadyBC);
-        MessageDispatch.UnRegisterReceiver<GM_Begin>(MessageID.GM_BEGIN_BC, OnBeginBC);   
+        MessageDispatch.UnRegisterReceiver<GM_Begin>(MessageID.GM_BEGIN_BC, OnBeginBC);
         MessageDispatch.UnRegisterReceiver<GM_Frame_BC>(MessageID.GM_FRAME_BC, OnFrameBC);
         MessageDispatch.UnRegisterReceiver<GM_Return>(MessageID.GM_PING_SC, OnPingReturn);
-       
+
         #endregion
 
         #region Command
+
         CommandDispatch.UnRegisterReceiver<CMD_ReleaseSkill>(CommandID.RELEASE_SKILL, OnCommandReleaseSkill);
         CommandDispatch.UnRegisterReceiver<CMD_MoveToPoint>(CommandID.MOVE_TO_POINT, OnCommandMoveToPoint);
         CommandDispatch.UnRegisterReceiver<CMD_CreateMonster>(CommandID.CREATE_MONSTER, OnCreateMonster);
+
         #endregion
     }
 
@@ -198,21 +208,22 @@ public class FrameScene : GameScene, IReceiverHandler
 
     private void OnAccept(GM_Accept recvData)
     {
-        if(recvData==null)
+        if (recvData == null)
         {
             return;
         }
 
         Client client = ClientService.GetSingleton().GetClient(ClientID.Frame);
-        if(client!=null)
+        if (client != null)
         {
-            client.OnAccept(recvData.conv,recvData.protocol);
+            client.OnAccept(recvData.conv, recvData.protocol);
 
             GameApplication.GetSingleton().protocol = (Protocol)recvData.protocol;
             //发回给服务器
             ClientService.GetSingleton().SendUdp(ClientID.Frame, MessageID.GM_ACCEPT_CS, recvData);
         }
     }
+
     private void OnConnectReturn(GM_Connect recvData)
     {
         int roleId = recvData.roleId;
@@ -242,18 +253,16 @@ public class FrameScene : GameScene, IReceiverHandler
     /// <param name="recvData"></param>
     private void OnDisconnectBC(GM_Disconnect recvData)
     {
-        if(recvData==null)
+        if (recvData == null)
         {
             return;
         }
-        PlayerManager.GetSingleton().RemovePlayerCharacter(recvData.roleId);
 
-      
+        PlayerManager.GetSingleton().RemovePlayerCharacter(recvData.roleId);
     }
 
     private void OnReadyBC(GM_Ready recvData)
     {
-
         Debug.Log("玩家准备,id=" + recvData.roleId);
 
         if (recvData == null) return;
@@ -267,13 +276,12 @@ public class FrameScene : GameScene, IReceiverHandler
             tmpPlayerCharacter.SetReady();
         }
 
-        if(recvData.roleId == PlayerManager.GetSingleton().mRoleId)
+        if (recvData.roleId == PlayerManager.GetSingleton().mRoleId)
         {
             PlayerManager.GetSingleton().mReady = true;
         }
-      
+
         EventDispatch.Dispatch(EventID.Ready_Broadcast, recvData.roleId);
-       
     }
 
     private void OnBeginBC(GM_Begin recvData)
@@ -281,20 +289,19 @@ public class FrameScene : GameScene, IReceiverHandler
         if (recvData.result == 0)
         {
             Debug.Log("Server frame begin");
-        
+
             mCurrentFrame = 1;
 
             mBegin = true;
 
             mFrameTime = 0;
-           
+
             mTickThread = new Thread(Tick);
             mTickThread.Start();
 
             EventDispatch.Dispatch(EventID.Begin_Broadcast, mBegin);
 
             CreateMonster();
-         
         }
         else
         {
@@ -309,14 +316,15 @@ public class FrameScene : GameScene, IReceiverHandler
         {
             OnLockStepFrameBC(recvData);
         }
-        else{
+        else
+        {
             OnOptimisticFrameBC(recvData);
         }
     }
- 
+
     private void OnPingReturn(GM_Return recvData)
     {
-        if(recvData == null)
+        if (recvData == null)
         {
             return;
         }
@@ -324,11 +332,10 @@ public class FrameScene : GameScene, IReceiverHandler
         long interval = DateTime.Now.Ticks - mPingTime;
         TimeSpan span = new TimeSpan(interval);
         int ping = span.Milliseconds / 2;
-      
+
         EventDispatch.Dispatch(EventID.Ping_Broadcast, ping);
-
-
     }
+
     #region LockStep
 
     /// <summary>
@@ -356,6 +363,7 @@ public class FrameScene : GameScene, IReceiverHandler
 
                 sendData.command.Add(cmd);
             }
+
             mCommandQueue.Clear();
         }
 
@@ -364,21 +372,22 @@ public class FrameScene : GameScene, IReceiverHandler
 
         mSentFrame++;
     }
-     
+
     private void OnLockStepFrameBC(GM_Frame_BC recvData)
     {
-        if(recvData == null)
+        if (recvData == null)
         {
             return;
         }
+
         //不打印那么多信息
-        if (recvData.command.Count > 0 || recvData.frame % 30 ==0)
+        if (recvData.command.Count > 0 || recvData.frame % 30 == 0)
         {
             Debug.Log("Receive frame:" + recvData.frame + " command:" + recvData.command.Count);
         }
 
         long frame = recvData.frame;
-      
+
         mFrameTime = recvData.frametime;
 
         if (frame == mCurrentFrame)
@@ -388,12 +397,13 @@ public class FrameScene : GameScene, IReceiverHandler
             for (int i = 0; i < recvData.command.Count; ++i)
             {
                 GMCommand cmd = recvData.command[i];
-                Command data = new Command(cmd.id, cmd.frame,cmd.type, cmd.data, cmd.frametime );
+                Command data = new Command(cmd.id, cmd.frame, cmd.type, cmd.data, cmd.frametime);
 
                 if (mFrameDic.ContainsKey(frame) == false)
                 {
                     mFrameDic.Add(frame, new List<Command>());
                 }
+
                 mFrameDic[frame].Add(data);
 
                 DoCommand(data);
@@ -407,10 +417,12 @@ public class FrameScene : GameScene, IReceiverHandler
         {
             Debug.LogError("frame = " + frame + ",current=" + mCurrentFrame);
         }
-
     }
+
     #endregion
+
     #region 乐观模式
+
     /// <summary>
     /// 乐观模式处理
     /// </summary>
@@ -424,7 +436,7 @@ public class FrameScene : GameScene, IReceiverHandler
 
         mCurrentFrame = recvData.frame;
 
-       
+
         //不打印那么多信息
         if (recvData.command.Count > 0 || recvData.frame % 30 == 0)
         {
@@ -438,12 +450,13 @@ public class FrameScene : GameScene, IReceiverHandler
         for (int i = 0; i < recvData.command.Count; ++i)
         {
             GMCommand cmd = recvData.command[i];
-            Command data = new Command(cmd.id, cmd.frame, cmd.type, cmd.data, cmd.frametime );
+            Command data = new Command(cmd.id, cmd.frame, cmd.type, cmd.data, cmd.frametime);
 
             if (mFrameDic.ContainsKey(mCurrentFrame) == false)
             {
                 mFrameDic.Add(mCurrentFrame, new List<Command>());
             }
+
             mFrameDic[mCurrentFrame].Add(data);
 
             DoCommand(data);
@@ -451,7 +464,9 @@ public class FrameScene : GameScene, IReceiverHandler
 
         EventDispatch.Dispatch(EventID.Frame_Broadcast, mCurrentFrame);
     }
+
     #endregion
+
     #endregion
 
     /// <summary>
@@ -522,9 +537,9 @@ public class FrameScene : GameScene, IReceiverHandler
                 }
             }
         }
+
         return 0;
     }
-
 
 
     /// <summary>
@@ -535,15 +550,14 @@ public class FrameScene : GameScene, IReceiverHandler
     {
         CommandID id = (CommandID)cmd.type;
         if (Debuger.ENABLELOG)
-            Debug.Log("执行关键帧 = " + id.ToString() + ",frametime = "+ cmd.time);
+            Debug.Log("执行关键帧 = " + id.ToString() + ",frametime = " + cmd.time);
 
-       
 
         CommandDispatch.Dispatch(cmd);
-
     }
 
     #region Command
+
     void OnCommandReleaseSkill(CMD_ReleaseSkill varCommand)
     {
         PlayerCharacter tmpPlayerCharacter = PlayerManager.GetSingleton().GetPlayerCharacter(varCommand.roleId);
@@ -555,7 +569,6 @@ public class FrameScene : GameScene, IReceiverHandler
 
     void OnCommandMoveToPoint(CMD_MoveToPoint varCommand)
     {
-    
         PlayerCharacter tmpPlayerCharacter = PlayerManager.GetSingleton().GetPlayerCharacter(varCommand.roleId);
         if (tmpPlayerCharacter)
         {
@@ -571,7 +584,7 @@ public class FrameScene : GameScene, IReceiverHandler
 
     void OnCreateMonster(CMD_CreateMonster cmd)
     {
-        if(cmd == null)
+        if (cmd == null)
         {
             return;
         }
@@ -579,14 +592,14 @@ public class FrameScene : GameScene, IReceiverHandler
         CreatePlayerCharacter(ProtoTransfer.Get(cmd.player));
 
         PlayerCharacter tmpPlayerCharacter = PlayerManager.GetSingleton().GetPlayerCharacter(cmd.player.roleId);
-        if(tmpPlayerCharacter)
+        if (tmpPlayerCharacter)
         {
             tmpPlayerCharacter.SetPosition(ProtoTransfer.Get(cmd.position));
             tmpPlayerCharacter.SetRotation(ProtoTransfer.Get(cmd.direction));
             tmpPlayerCharacter.SetReady();
         }
-
     }
+
     #endregion
 
 
@@ -618,15 +631,15 @@ public class FrameScene : GameScene, IReceiverHandler
             data.ip,
             data.tcpPort,
             data.udpPort,
-            OnConnectSuccess, 
+            OnConnectSuccess,
             OnConnectFail);
     }
 
-    void OnAddCommand( Command cmd)
+    void OnAddCommand(Command cmd)
     {
         if (cmd == null) return;
 
-        if(mBegin == false)
+        if (mBegin == false)
         {
             Debug.Log("Frame not Begin ");
 
@@ -659,10 +672,8 @@ public class FrameScene : GameScene, IReceiverHandler
 
             sendData.command.Add(data);
             ClientService.GetSingleton().SendUdp(ClientID.Frame, MessageID.GM_FRAME_CS, sendData);
-
         }
     }
-
 
     #endregion
 
@@ -673,13 +684,13 @@ public class FrameScene : GameScene, IReceiverHandler
         data.player = new GMPlayerInfo();
         for (int i = 0; i < 5; ++i)
         {
-            data.player.roleId = 10000+i;
+            data.player.roleId = 10000 + i;
             data.player.type = 1; //怪物
             data.player.moveSpeed = 350;
             data.player.maxBlood = 200;
             data.player.nowBlood = 200;
             data.player.name = "client " + data.player.roleId;
-            data.position = ProtoTransfer.Get(new Vector3((i+1) * (i %2 == 0? -3:3), 1, 10));
+            data.position = ProtoTransfer.Get(new Vector3((i + 1) * (i % 2 == 0 ? -3 : 3), 1, 10));
             data.direction = ProtoTransfer.Get(Vector3.zero);
 
             Command cmd = new Command();
@@ -687,12 +698,11 @@ public class FrameScene : GameScene, IReceiverHandler
             cmd.SetFrame(mCurrentFrame, mFrameTime);
 
             DoCommand(cmd);
-
         }
-
     }
 
     #region Other
+
     public static bool SamplePosition(Vector3 varOriginalPosition, out Vector3 varTargetPosition)
     {
         varTargetPosition = Vector3.zero;
@@ -700,18 +710,17 @@ public class FrameScene : GameScene, IReceiverHandler
         float tmpDistance = 0.05f;
         while ((tmpDistance *= 2) < 50)
         {
-
-            if (UnityEngine.AI.NavMesh.SamplePosition(varOriginalPosition, out hit, tmpDistance, UnityEngine.AI.NavMesh.AllAreas))
+            if (UnityEngine.AI.NavMesh.SamplePosition(varOriginalPosition, out hit, tmpDistance,
+                    UnityEngine.AI.NavMesh.AllAreas))
             {
-
                 varTargetPosition = hit.position;
 
                 return true;
             }
         }
+
         return false;
     }
+
     #endregion
 }
-
-

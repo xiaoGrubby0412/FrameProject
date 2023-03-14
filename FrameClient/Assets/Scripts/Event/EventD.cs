@@ -4,7 +4,7 @@ public enum EventID
 {
     Connect_Request,
     Connect_Return,
-    Ready_Request,	
+    Ready_Request,
     Ready_Broadcast,
     Begin_Broadcast,
     Frame_Broadcast,
@@ -15,7 +15,4 @@ public enum EventID
     Player_Move,
     Player_Remove,
     Player_BloodChange,
-
 }
-
-

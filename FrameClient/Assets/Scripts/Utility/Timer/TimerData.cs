@@ -14,6 +14,7 @@ namespace Util
             get { return m_nTimerId; }
             set { m_nTimerId = value; }
         }
+
         private int m_nInterval;
 
         public int NInterval
@@ -21,6 +22,7 @@ namespace Util
             get { return m_nInterval; }
             set { m_nInterval = value; }
         }
+
         private ulong m_unNextTick;
 
         public ulong UnNextTick
@@ -29,11 +31,7 @@ namespace Util
             set { m_unNextTick = value; }
         }
 
-        public abstract Delegate Action
-        {
-            get;
-            set;
-        }
+        public abstract Delegate Action { get; set; }
 
         public abstract void DoAction();
     }

@@ -3,8 +3,6 @@
 
 public enum GameSceneType
 {
-	None = -1,
+    None = -1,
     FrameScene,
 }
-
-

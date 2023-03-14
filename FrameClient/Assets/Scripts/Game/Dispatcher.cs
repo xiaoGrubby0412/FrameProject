@@ -16,7 +16,7 @@ public class Dispatcher
         bool Equals(IReceiver receiver);
     }
 
-    private class Receiver<T> : IReceiver 
+    private class Receiver<T> : IReceiver
     {
         private Action<T> mReceiver;
 
@@ -40,7 +40,7 @@ public class Dispatcher
 
         public void Invoke(object data)
         {
-            Invoke((T)data);           
+            Invoke((T)data);
         }
 
         public bool Equals(IReceiver receiver)
@@ -60,6 +60,7 @@ public class Dispatcher
             {
                 return false;
             }
+
             return o.mReceiver == mReceiver;
         }
 
@@ -72,7 +73,7 @@ public class Dispatcher
     private Dictionary<int, List<IReceiver>> mReceiverDic = new Dictionary<int, List<IReceiver>>();
     private Dictionary<int, Type> mReceiverTypeDic = new Dictionary<int, Type>();
 
-    public bool RegisterReceiver<T>(int id, Action<T> action) 
+    public bool RegisterReceiver<T>(int id, Action<T> action)
     {
         if (action == null) return false;
 
@@ -102,19 +103,19 @@ public class Dispatcher
         mReceiverDic[id].Add(receiver);
 
         return true;
-
     }
-    public void UnRegisterReceiver<T>(int id, Action<T> action) 
+
+    public void UnRegisterReceiver<T>(int id, Action<T> action)
     {
         if (mReceiverDic.ContainsKey(id))
         {
             for (int i = mReceiverDic[id].Count - 1; i >= 0; --i)
             {
                 IReceiver receiver = mReceiverDic[id][i];
-                if (receiver!=null && receiver.IsType(typeof(T)))
+                if (receiver != null && receiver.IsType(typeof(T)))
                 {
                     Receiver<T> o = receiver as Receiver<T>;
-                    if (o !=null && o.Equals(action))
+                    if (o != null && o.Equals(action))
                     {
                         mReceiverDic[id].RemoveAt(i);
                     }
@@ -168,6 +169,7 @@ public class Dispatcher
         {
             return mReceiverTypeDic[id];
         }
+
         return null;
     }
 
@@ -177,4 +179,3 @@ public class Dispatcher
         mReceiverTypeDic.Clear();
     }
 }
-

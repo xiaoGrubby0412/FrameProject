@@ -13,20 +13,17 @@ using UnityEngine;
 
 public static class vp_TimeUtility
 {
-
     /// <summary>
     /// represents a time measured in standard units
     /// </summary>
     public struct Units
     {
-
         public int hours;
         public int minutes;
         public int seconds;
-        public int deciSeconds;		// a.k.a. 'tenths of a second'
-        public int centiSeconds;	// a.k.a. 'hundredths of a second'
+        public int deciSeconds; // a.k.a. 'tenths of a second'
+        public int centiSeconds; // a.k.a. 'hundredths of a second'
         public int milliSeconds;
-
     }
 
 
@@ -38,7 +35,6 @@ public static class vp_TimeUtility
     /// </summary>
     public static Units TimeToUnits(float timeInSeconds)
     {
-
         Units iTime = new Units();
 
         iTime.hours = ((int)timeInSeconds) / 3600;
@@ -50,7 +46,6 @@ public static class vp_TimeUtility
         iTime.milliSeconds = (int)((timeInSeconds - iTime.seconds) * 1000 % 6000);
 
         return iTime;
-
     }
 
 
@@ -60,7 +55,6 @@ public static class vp_TimeUtility
     /// </summary>
     public static float UnitsToSeconds(Units units)
     {
-
         float seconds = 0.0f;
 
         seconds += units.hours * 3600;
@@ -72,7 +66,6 @@ public static class vp_TimeUtility
         seconds += (float)(units.milliSeconds / 1000);
 
         return seconds;
-
     }
 
 
@@ -84,27 +77,29 @@ public static class vp_TimeUtility
     /// typically found in racing games
     /// </summary>
     public static string TimeToString(float timeInSeconds, bool showHours, bool showMinutes, bool showSeconds,
-                                        bool showTenths, bool showHundredths, bool showMilliSeconds,
-                                        char delimiter = ':')
+        bool showTenths, bool showHundredths, bool showMilliSeconds,
+        char delimiter = ':')
     {
-
         Units iTime = TimeToUnits(timeInSeconds);
 
         string hours = (iTime.hours < 10) ? "0" + iTime.hours.ToString() : iTime.hours.ToString();
         string minutes = (iTime.minutes < 10) ? "0" + iTime.minutes.ToString() : iTime.minutes.ToString();
         string seconds = (iTime.seconds < 10) ? "0" + iTime.seconds.ToString() : iTime.seconds.ToString();
         string deciSeconds = iTime.deciSeconds.ToString();
-        string centiSeconds = (iTime.centiSeconds < 10) ? "0" + iTime.centiSeconds.ToString() : iTime.centiSeconds.ToString();
-        string milliSeconds = (iTime.milliSeconds < 100) ? "0" + iTime.milliSeconds.ToString() : iTime.milliSeconds.ToString();
+        string centiSeconds = (iTime.centiSeconds < 10)
+            ? "0" + iTime.centiSeconds.ToString()
+            : iTime.centiSeconds.ToString();
+        string milliSeconds = (iTime.milliSeconds < 100)
+            ? "0" + iTime.milliSeconds.ToString()
+            : iTime.milliSeconds.ToString();
         milliSeconds = (iTime.milliSeconds < 10) ? "0" + milliSeconds : milliSeconds;
 
         return ((showHours ? hours : "") +
-            (showMinutes ? delimiter + minutes : "") +
-            (showSeconds ? delimiter + seconds : "") +
-            (showTenths ? delimiter + deciSeconds : "") +
-            (showHundredths ? delimiter + centiSeconds : "") +
-            (showMilliSeconds ? delimiter + milliSeconds : "")).TrimStart(delimiter);
-
+                (showMinutes ? delimiter + minutes : "") +
+                (showSeconds ? delimiter + seconds : "") +
+                (showTenths ? delimiter + deciSeconds : "") +
+                (showHundredths ? delimiter + centiSeconds : "") +
+                (showMilliSeconds ? delimiter + milliSeconds : "")).TrimStart(delimiter);
     }
 
 
@@ -113,20 +108,23 @@ public static class vp_TimeUtility
     /// with the time formatted as a configurable list of standard
     /// time units, delimited by a char of choice
     /// </summary>
-    public static string SystemTimeToString(System.DateTime systemTime, bool showHours, bool showMinutes, bool showSeconds,
-                                        bool showTenths, bool showHundredths, bool showMilliSeconds,
-                                        char delimiter = ':')
+    public static string SystemTimeToString(System.DateTime systemTime, bool showHours, bool showMinutes,
+        bool showSeconds,
+        bool showTenths, bool showHundredths, bool showMilliSeconds,
+        char delimiter = ':')
     {
-        return TimeToString(SystemTimeToSeconds(systemTime), showHours, showMinutes, showSeconds, showTenths, showHundredths, showMilliSeconds, delimiter);
+        return TimeToString(SystemTimeToSeconds(systemTime), showHours, showMinutes, showSeconds, showTenths,
+            showHundredths, showMilliSeconds, delimiter);
     }
 
 
     // overload defaulting to the current system time
     public static string SystemTimeToString(bool showHours, bool showMinutes, bool showSeconds,
-                                        bool showTenths, bool showHundredths, bool showMilliSeconds,
-                                        char delimiter = ':')
+        bool showTenths, bool showHundredths, bool showMilliSeconds,
+        char delimiter = ':')
     {
-        return SystemTimeToString(System.DateTime.Now, showHours, showMinutes, showSeconds, showTenths, showHundredths, showMilliSeconds, delimiter);
+        return SystemTimeToString(System.DateTime.Now, showHours, showMinutes, showSeconds, showTenths, showHundredths,
+            showMilliSeconds, delimiter);
     }
 
 
@@ -138,7 +136,6 @@ public static class vp_TimeUtility
     /// </summary>
     public static Units SystemTimeToUnits(System.DateTime systemTime)
     {
-
         Units iTime = new Units();
 
         iTime.hours = systemTime.Hour;
@@ -149,7 +146,6 @@ public static class vp_TimeUtility
         iTime.milliSeconds = systemTime.Millisecond;
 
         return iTime;
-
     }
 
 
@@ -166,9 +162,7 @@ public static class vp_TimeUtility
     /// </summary>
     public static float SystemTimeToSeconds(System.DateTime systemTime)
     {
-
         return UnitsToSeconds(SystemTimeToUnits(systemTime));
-
     }
 
 
@@ -188,9 +182,9 @@ public static class vp_TimeUtility
     /// will return an angle corresponding to the current amount
     /// of seconds in the current minute at millisecond resolution
     /// </summary>
-    public static float TimeToDegrees(float seconds, bool includeHours = false, bool includeMinutes = false, bool includeSeconds = true, bool includeMilliSeconds = true)
+    public static float TimeToDegrees(float seconds, bool includeHours = false, bool includeMinutes = false,
+        bool includeSeconds = true, bool includeMilliSeconds = true)
     {
-
         Units iTime = TimeToUnits(seconds);
 
         // hours @ second-resolution
@@ -229,10 +223,10 @@ public static class vp_TimeUtility
         if (includeMilliSeconds)
             return MilliSecondsToDegreesInternal(iTime.milliSeconds);
 
-        UnityEngine.Debug.LogError("Error: (vp_TimeUtility.TimeToDegrees) This combination of time units is not supported.");
+        UnityEngine.Debug.LogError(
+            "Error: (vp_TimeUtility.TimeToDegrees) This combination of time units is not supported.");
 
         return 0.0f;
-
     }
 
 
@@ -245,12 +239,10 @@ public static class vp_TimeUtility
     /// </summary>
     public static Vector3 SystemTimeToDegrees(System.DateTime time, bool smooth = true)
     {
-
         return new Vector3(
             HoursToDegreesInternal(time.Hour, smooth ? time.Minute : 0.0f, smooth ? time.Second : 0.0f),
             MinutesToDegreesInternal(time.Minute, smooth ? time.Second : 0.0f, smooth ? time.Millisecond : 0.0f),
             SecondsToDegreesInternal(time.Second, smooth ? time.Millisecond : 0.0f));
-
     }
 
     // overload defaulting to the current system time
@@ -301,6 +293,4 @@ public static class vp_TimeUtility
     {
         return milliSeconds * 0.36f;
     }
-
-
 }

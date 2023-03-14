@@ -1,5 +1,4 @@
-﻿
-using System;
+﻿using System;
 using System.Runtime;
 
 public sealed class KeyedPriorityQueueHeadChangedEventArgs<T> : EventArgs where T : class
@@ -15,17 +14,11 @@ public sealed class KeyedPriorityQueueHeadChangedEventArgs<T> : EventArgs where 
 
     public T NewFirstElement
     {
-        get
-        {
-            return this.newFirstElement;
-        }
+        get { return this.newFirstElement; }
     }
 
     public T OldFirstElement
     {
-        get
-        {
-            return this.oldFirstElement;
-        }
+        get { return this.oldFirstElement; }
     }
 }

@@ -1,10 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
 using PBMessage;
+
 namespace Network
 {
-
-    public static class MessageDispatch 
+    public static class MessageDispatch
     {
         static Dispatcher mDispatcher = new Dispatcher();
 
@@ -12,6 +12,7 @@ namespace Network
         {
             return mDispatcher.RegisterReceiver((int)varMessageID, action);
         }
+
         public static void UnRegisterReceiver<T>(MessageID varMessageID, Action<T> action) where T : class
         {
             mDispatcher.UnRegisterReceiver((int)varMessageID, action);
@@ -19,13 +20,14 @@ namespace Network
 
         public static void Dispatch(MessageBuffer message)
         {
-            if(message == null)
+            if (message == null)
             {
                 return;
             }
+
             int id = message.id();
 
-            Type type =GetType((MessageID)id);
+            Type type = GetType((MessageID)id);
 
             if (type == null)
             {
@@ -33,7 +35,7 @@ namespace Network
             }
 
             object data = ProtoTransfer.DeserializeProtoBuf(message.body(), type);
-            if(data ==null)
+            if (data == null)
             {
                 return;
             }
@@ -52,4 +54,3 @@ namespace Network
         }
     }
 }
-

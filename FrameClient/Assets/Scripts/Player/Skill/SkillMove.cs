@@ -18,11 +18,12 @@ public class SkillMove : MonoBehaviour
 
         Helper.SetMeshRendererColor(transform, mPlayerCharacter.type == 0 ? Color.red : Color.blue);
     }
+
     void Update()
     {
         time -= Time.deltaTime;
-        
-        if(time < 0)
+
+        if (time < 0)
         {
             Destroy(gameObject);
         }
@@ -31,24 +32,24 @@ public class SkillMove : MonoBehaviour
             float factor = time / duration;
 
             transform.position = from * factor + (1 - factor) * to;
-        }   
+        }
     }
 
     private void OnTriggerEnter(Collider other)
     {
         PlayerCharacter tmpPlayerCharacter = other.GetComponent<PlayerCharacter>();
-        if(tmpPlayerCharacter && tmpPlayerCharacter.roleid != mPlayerCharacter.roleid)
+        if (tmpPlayerCharacter && tmpPlayerCharacter.roleid != mPlayerCharacter.roleid)
         {
             int interval = -10; //伤害
             tmpPlayerCharacter.SetBlood(tmpPlayerCharacter.maxBlood, tmpPlayerCharacter.nowBlood + interval);
 
             if (tmpPlayerCharacter.nowBlood <= 0)
             {
-                mPlayerCharacter.SetSpeed(mPlayerCharacter.moveSpeedAddition+ 50, mPlayerCharacter.moveSpeedPercent+ 20);
+                mPlayerCharacter.SetSpeed(mPlayerCharacter.moveSpeedAddition + 50,
+                    mPlayerCharacter.moveSpeedPercent + 20);
             }
 
             Destroy(gameObject);
         }
     }
 }
-

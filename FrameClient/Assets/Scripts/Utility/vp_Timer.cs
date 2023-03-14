@@ -25,7 +25,6 @@ using System.Diagnostics;
 
 public class vp_Timer : MonoBehaviour
 {
-
     private static GameObject m_MainObject = null;
 
     private static List<Event> m_Active = new List<Event>();
@@ -92,13 +91,11 @@ public class vp_Timer : MonoBehaviour
     /// </summary>
     private void Awake()
     {
-
         if (!WasAddedCorrectly)
         {
             Destroy(this);
             return;
         }
-
     }
 
 
@@ -109,7 +106,6 @@ public class vp_Timer : MonoBehaviour
     /// </summary>
     private void Update()
     {
-
         //	NOTE: this method never processes more than 'MaxEventsPerFrame',
         // in order to avoid performance problems with excessive amounts of
         // timers. this may lead to events being delayed a few frames.
@@ -121,7 +117,6 @@ public class vp_Timer : MonoBehaviour
         m_EventBatch = 0;
         while ((vp_Timer.m_Active.Count > 0) && m_EventBatch < MaxEventsPerFrame)
         {
-
             // if we reached beginning of list, halt until next frame
             if (m_EventIterator < 0)
             {
@@ -137,8 +132,8 @@ public class vp_Timer : MonoBehaviour
                 m_EventIterator = vp_Timer.m_Active.Count - 1;
 
             // execute all due events
-            if (Time.time >= vp_Timer.m_Active[m_EventIterator].DueTime ||	// time is up
-                vp_Timer.m_Active[m_EventIterator].Id == 0)					// event has been canceled ('Execute' will kill it)
+            if (Time.time >= vp_Timer.m_Active[m_EventIterator].DueTime || // time is up
+                vp_Timer.m_Active[m_EventIterator].Id == 0) // event has been canceled ('Execute' will kill it)
                 vp_Timer.m_Active[m_EventIterator].Execute();
             else
             {
@@ -154,7 +149,6 @@ public class vp_Timer : MonoBehaviour
             m_EventIterator--;
             m_EventBatch++;
         }
-
     }
 
 
@@ -170,27 +164,41 @@ public class vp_Timer : MonoBehaviour
 
     // time + callback + [timer handle]
     public static void In(float delay, Callback callback, Handle timerHandle = null)
-    { Schedule(delay, callback, null, null, timerHandle, 1, -1.0f); }
+    {
+        Schedule(delay, callback, null, null, timerHandle, 1, -1.0f);
+    }
 
     // time + callback + iterations + [timer handle]
     public static void In(float delay, Callback callback, int iterations, Handle timerHandle = null)
-    { Schedule(delay, callback, null, null, timerHandle, iterations, -1.0f); }
+    {
+        Schedule(delay, callback, null, null, timerHandle, iterations, -1.0f);
+    }
 
     // time + callback + iterations + interval + [timer handle]
     public static void In(float delay, Callback callback, int iterations, float interval, Handle timerHandle = null)
-    { Schedule(delay, callback, null, null, timerHandle, iterations, interval); }
+    {
+        Schedule(delay, callback, null, null, timerHandle, iterations, interval);
+    }
 
     // time + callback + arguments + [timer handle]
     public static void In(float delay, ArgCallback callback, object arguments, Handle timerHandle = null)
-    { Schedule(delay, null, callback, arguments, timerHandle, 1, -1.0f); }
+    {
+        Schedule(delay, null, callback, arguments, timerHandle, 1, -1.0f);
+    }
 
     // time + callback + arguments + iterations + [timer handle]
-    public static void In(float delay, ArgCallback callback, object arguments, int iterations, Handle timerHandle = null)
-    { Schedule(delay, null, callback, arguments, timerHandle, iterations, -1.0f); }
+    public static void In(float delay, ArgCallback callback, object arguments, int iterations,
+        Handle timerHandle = null)
+    {
+        Schedule(delay, null, callback, arguments, timerHandle, iterations, -1.0f);
+    }
 
     // time + callback + arguments + iterations + interval + [timer handle]
-    public static void In(float delay, ArgCallback callback, object arguments, int iterations, float interval, Handle timerHandle = null)
-    { Schedule(delay, null, callback, arguments, timerHandle, iterations, interval); }
+    public static void In(float delay, ArgCallback callback, object arguments, int iterations, float interval,
+        Handle timerHandle = null)
+    {
+        Schedule(delay, null, callback, arguments, timerHandle, iterations, interval);
+    }
 
 
     /// <summary>
@@ -213,9 +221,9 @@ public class vp_Timer : MonoBehaviour
     /// gameobject upon the first time called (for purposes of
     /// running the Update loop and drawing editor debug info)
     /// </summary>
-    private static void Schedule(float time, Callback func, ArgCallback argFunc, object args, Handle timerHandle, int iterations, float interval)
+    private static void Schedule(float time, Callback func, ArgCallback argFunc, object args, Handle timerHandle,
+        int iterations, float interval)
     {
-
         if (func == null && argFunc == null)
         {
             UnityEngine.Debug.LogError("Error: (vp_Timer) Aborted event because function is null.");
@@ -261,6 +269,7 @@ public class vp_Timer : MonoBehaviour
             m_NewEvent.ArgFunction = argFunc;
             m_NewEvent.Arguments = args;
         }
+
         m_NewEvent.StartTime = Time.time;
         m_NewEvent.DueTime = Time.time + time;
         m_NewEvent.Iterations = iterations;
@@ -284,10 +293,9 @@ public class vp_Timer : MonoBehaviour
         }
 
 #if (UNITY_EDITOR && DEBUG)
-		m_NewEvent.StoreCallingMethod();
-		EditorRefresh();
+        m_NewEvent.StoreCallingMethod();
+        EditorRefresh();
 #endif
-
     }
 
 
@@ -296,7 +304,6 @@ public class vp_Timer : MonoBehaviour
     /// </summary>
     private static void Cancel(vp_Timer.Handle handle)
     {
-
         if (handle == null)
             return;
 
@@ -312,7 +319,6 @@ public class vp_Timer : MonoBehaviour
             handle.Id = 0;
             return;
         }
-
     }
 
 
@@ -321,12 +327,10 @@ public class vp_Timer : MonoBehaviour
     /// </summary>
     public static void CancelAll()
     {
-
         for (int t = vp_Timer.m_Active.Count - 1; t > -1; t--)
         {
             vp_Timer.m_Active[t].Id = 0;
         }
-
     }
 
 
@@ -336,13 +340,11 @@ public class vp_Timer : MonoBehaviour
     /// </summary>
     public static void CancelAll(string methodName)
     {
-
         for (int t = vp_Timer.m_Active.Count - 1; t > -1; t--)
         {
             if (vp_Timer.m_Active[t].MethodName == methodName)
                 vp_Timer.m_Active[t].Id = 0;
         }
-
     }
 
 
@@ -357,9 +359,8 @@ public class vp_Timer : MonoBehaviour
         vp_Timer.m_Pool.Clear();
 
 #if (UNITY_EDITOR && DEBUG)
-		EditorRefresh();
+        EditorRefresh();
 #endif
-
     }
 
 
@@ -368,13 +369,11 @@ public class vp_Timer : MonoBehaviour
     /// </summary>
     public static Stats EditorGetStats()
     {
-
         Stats stats;
         stats.Created = m_Active.Count + m_Pool.Count;
         stats.Inactive = m_Pool.Count;
         stats.Active = m_Active.Count;
         return stats;
-
     }
 
 
@@ -385,12 +384,10 @@ public class vp_Timer : MonoBehaviour
     /// </summary>
     public static string EditorGetMethodInfo(int eventIndex)
     {
-
         if (eventIndex < 0 || eventIndex > m_Active.Count - 1)
             return "Argument out of range.";
 
         return m_Active[eventIndex].MethodInfo;
-
     }
 
 
@@ -400,25 +397,23 @@ public class vp_Timer : MonoBehaviour
     /// </summary>
     public static int EditorGetMethodId(int eventIndex)
     {
-
         if (eventIndex < 0 || eventIndex > m_Active.Count - 1)
             return 0;
 
         return m_Active[eventIndex].Id;
-
     }
 
 
 #if (DEBUG && UNITY_EDITOR)
-	/// <summary>
-	/// updates the name of the main gamobject, visible in the
-	/// hierarchy view during runtime (if compiling with the
-	/// DEBUG define)
-	/// </summary>
-	private static void EditorRefresh()
-	{
-		m_MainObject.name = "Timers (" + m_Active.Count + " / " + (m_Pool.Count + m_Active.Count).ToString() + ")";
-	}
+    /// <summary>
+    /// updates the name of the main gamobject, visible in the
+    /// hierarchy view during runtime (if compiling with the
+    /// DEBUG define)
+    /// </summary>
+    private static void EditorRefresh()
+    {
+        m_MainObject.name = "Timers (" + m_Active.Count + " / " + (m_Pool.Count + m_Active.Count).ToString() + ")";
+    }
 #endif
 
 
@@ -434,7 +429,6 @@ public class vp_Timer : MonoBehaviour
     /////////////////////////////////////////////////////////////////////////////////
     private class Event
     {
-
         public int Id;
 
         public Callback Function = null;
@@ -449,7 +443,7 @@ public class vp_Timer : MonoBehaviour
         public bool Paused = false;
 
 #if (DEBUG && UNITY_EDITOR)
-		private string m_CallingMethod = "";
+        private string m_CallingMethod = "";
 #endif
 
 
@@ -459,7 +453,6 @@ public class vp_Timer : MonoBehaviour
         /// </summary>
         public void Execute()
         {
-
             // if either 'Id' or 'DueTime' is zero, this timer has been
             // canceled: recycle it!
             if (Id == 0 || DueTime == 0.0f)
@@ -498,7 +491,6 @@ public class vp_Timer : MonoBehaviour
             // iteration left, or user set iterations to zero for infinite
             // repetition. either way: update due time with the interval
             DueTime = Time.time + Interval;
-
         }
 
 
@@ -507,7 +499,6 @@ public class vp_Timer : MonoBehaviour
         /// </summary>
         private void Recycle()
         {
-
             Id = 0;
             DueTime = 0.0f;
             StartTime = 0.0f;
@@ -520,9 +511,8 @@ public class vp_Timer : MonoBehaviour
                 m_Pool.Add(this);
 
 #if (UNITY_EDITOR && DEBUG)
-			EditorRefresh();
+            EditorRefresh();
 #endif
-
         }
 
 
@@ -532,33 +522,30 @@ public class vp_Timer : MonoBehaviour
         /// </summary>
         private void Destroy()
         {
-
             vp_Timer.m_Active.Remove(this);
             vp_Timer.m_Pool.Remove(this);
-
         }
 
 
 #if (UNITY_EDITOR && DEBUG)
-		/// <summary>
-		/// used by the debug mode to fetch the callstack
-		/// </summary>
-		public void StoreCallingMethod()
-		{
-			StackTrace stackTrace = new StackTrace();
+        /// <summary>
+        /// used by the debug mode to fetch the callstack
+        /// </summary>
+        public void StoreCallingMethod()
+        {
+            StackTrace stackTrace = new StackTrace();
 
-			string result = "";
-			string declaringType = "";
-			for (int v = 3; v < stackTrace.FrameCount; v++)
-			{
-				StackFrame stackFrame = stackTrace.GetFrame(v);
-				declaringType = stackFrame.GetMethod().DeclaringType.ToString();
-				result += " <- " + declaringType + ":" + stackFrame.GetMethod().Name.ToString();
-			}
+            string result = "";
+            string declaringType = "";
+            for (int v = 3; v < stackTrace.FrameCount; v++)
+            {
+                StackFrame stackFrame = stackTrace.GetFrame(v);
+                declaringType = stackFrame.GetMethod().DeclaringType.ToString();
+                result += " <- " + declaringType + ":" + stackFrame.GetMethod().Name.ToString();
+            }
 
-			m_CallingMethod = result;
-
-		}
+            m_CallingMethod = result;
+        }
 #endif
 
         /// <summary>
@@ -566,13 +553,11 @@ public class vp_Timer : MonoBehaviour
         /// </summary>
         private void Error(string message)
         {
-
             string msg = "Error: (vp_Timer.Event) " + message;
 #if (UNITY_EDITOR && DEBUG)
-			msg += MethodInfo;
+            msg += MethodInfo;
 #endif
             UnityEngine.Debug.LogError(msg);
-
         }
 
 
@@ -601,6 +586,7 @@ public class vp_Timer : MonoBehaviour
                         else return ArgFunction.Method.Name;
                     }
                 }
+
                 return null;
             }
         }
@@ -633,18 +619,18 @@ public class vp_Timer : MonoBehaviour
                         else
                             s += Arguments;
                     }
+
                     s += ")";
                 }
                 else
                     s = "(function = null)";
 
 #if (DEBUG && UNITY_EDITOR)
-				s += m_CallingMethod;
+                s += m_CallingMethod;
 #endif
                 return s;
             }
         }
-
     }
 
 
@@ -660,21 +646,17 @@ public class vp_Timer : MonoBehaviour
     /////////////////////////////////////////////////////////////////////////////////
     public class Handle
     {
-
-        private vp_Timer.Event m_Event = null;	// timer we're pointing at
-        private int m_Id = 0;					// id associated with timer upon creation of this handle
-        private int m_StartIterations = 1;		// the amount of iterations of the event when started
-        private float m_FirstDueTime = 0.0f;	// the initial execution delay of the event
+        private vp_Timer.Event m_Event = null; // timer we're pointing at
+        private int m_Id = 0; // id associated with timer upon creation of this handle
+        private int m_StartIterations = 1; // the amount of iterations of the event when started
+        private float m_FirstDueTime = 0.0f; // the initial execution delay of the event
 
         /// <summary>
         /// pauses or unpauses this timer event
         /// </summary>
         public bool Paused
         {
-            get
-            {
-                return Active && m_Event.Paused;
-            }
+            get { return Active && m_Event.Paused; }
             set
             {
                 if (Active)
@@ -743,10 +725,7 @@ public class vp_Timer : MonoBehaviour
         /// </summary>
         public float Delay
         {
-            get
-            {
-                return (Mathf.Round((m_FirstDueTime - TimeOfInitiation) * 1000.0f) / 1000.0f);
-            }
+            get { return (Mathf.Round((m_FirstDueTime - TimeOfInitiation) * 1000.0f) / 1000.0f); }
         }
 
         /// <summary>
@@ -799,8 +778,9 @@ public class vp_Timer : MonoBehaviour
                 if (Active)
                 {
                     return Delay +
-                        ((m_StartIterations) * ((m_StartIterations > 1) ? Interval : 0.0f));
+                           ((m_StartIterations) * ((m_StartIterations > 1) ? Interval : 0.0f));
                 }
+
                 return 0.0f;
             }
         }
@@ -826,10 +806,7 @@ public class vp_Timer : MonoBehaviour
         /// </summary>
         public int IterationsTotal
         {
-            get
-            {
-                return m_StartIterations;
-            }
+            get { return m_StartIterations; }
         }
 
         /// <summary>
@@ -854,10 +831,7 @@ public class vp_Timer : MonoBehaviour
         /// </summary>
         public int Id
         {
-            get
-            {
-                return m_Id;
-            }
+            get { return m_Id; }
             set
             {
                 // setting the property associates this handle with a
@@ -885,15 +859,15 @@ public class vp_Timer : MonoBehaviour
                         break;
                     }
                 }
+
                 if (m_Event == null)
-                    UnityEngine.Debug.LogError("Error: (vp_Timer.Handle) Failed to assign event with Id '" + m_Id + "'.");
+                    UnityEngine.Debug.LogError(
+                        "Error: (vp_Timer.Handle) Failed to assign event with Id '" + m_Id + "'.");
 
                 // store some initial event info
                 m_StartIterations = m_Event.Iterations;
                 m_FirstDueTime = m_Event.DueTime;
-
             }
-
         }
 
         /// <summary>
@@ -917,13 +891,19 @@ public class vp_Timer : MonoBehaviour
         /// <summary>
         /// returns the name of the scheduled method, or 'delegate'
         /// </summary>
-        public string MethodName { get { return m_Event.MethodName; } }
+        public string MethodName
+        {
+            get { return m_Event.MethodName; }
+        }
 
         /// <summary>
         /// returns the name of the scheduled method along with any arguments,
         /// plus a stack trace (if compiling with the DEBUG define)
         /// </summary>
-        public string MethodInfo { get { return m_Event.MethodInfo; } }
+        public string MethodInfo
+        {
+            get { return m_Event.MethodInfo; }
+        }
 
 
         /// <summary>
@@ -942,8 +922,5 @@ public class vp_Timer : MonoBehaviour
         {
             m_Event.DueTime = Time.time;
         }
-
     }
-
-
 }

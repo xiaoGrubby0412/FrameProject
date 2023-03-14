@@ -9,20 +9,26 @@ using System.Net.Sockets;
 namespace Network
 {
     public delegate void OnConnectHandler();
+
     public delegate void OnMessageHandler(MessageBuffer msg);
+
     public delegate void OnDisconnectHandler();
+
     public delegate void OnExceptionHandler(Exception e);
+
     public delegate void OnPingHandler(int m);
+
     public delegate void OnDebugHandler(string msg);
+
     public delegate void OnAcceptPollHandler(int sock);
 
 
     public class Client
-    {     
+    {
         static readonly byte pingByte = byte.MaxValue;
 
         List<string> mDebugMessageList = new List<string>();
-       
+
 
         Queue<MessageBuffer> mReceiveMessageQueue = new Queue<MessageBuffer>();
         Queue<bool> mConnectResultQueue = new Queue<bool>();
@@ -34,7 +40,7 @@ namespace Network
         public event OnPingHandler onPing;
         public event OnDebugHandler onDebug;
 
-        
+
         public bool IsConnected
         {
             get
@@ -43,6 +49,7 @@ namespace Network
                 {
                     return mTcp.IsConnected;
                 }
+
                 return false;
             }
         }
@@ -56,9 +63,13 @@ namespace Network
         private int mUDPPort;
 
         private int mAcceptSock = 0;
-        public int acceptSock { get { return mAcceptSock; } }
 
-      
+        public int acceptSock
+        {
+            get { return mAcceptSock; }
+        }
+
+
         public Client()
         {
         }
@@ -78,18 +89,19 @@ namespace Network
             {
                 mTcp.onConnect += OnConnect;
             }
+
             mTcp.onDisconnect += OnDisconnect;
             mTcp.onException += onException;
             mTcp.onMessage += OnReceive;
-      
+
             mTcp.Connect(mIP, mTCPPort);
         }
 
-        public void OnAccept(int sock,int protocol)
+        public void OnAccept(int sock, int protocol)
         {
             mAcceptSock = sock;
 
-            if (protocol  == 0)
+            if (protocol == 0)
             {
                 mUdp = new UdpService(this);
                 mUdp.onConnect += OnConnect;
@@ -109,10 +121,9 @@ namespace Network
 
                 mKcp.Connect(mIP, mUDPPort);
             }
-           
         }
 
- 
+
         public void Debug(string s)
         {
             mDebugMessageList.Add(s);
@@ -123,11 +134,12 @@ namespace Network
         /// </summary>
         private void OnConnect()
         {
-            lock(mConnectResultQueue)
+            lock (mConnectResultQueue)
             {
                 mConnectResultQueue.Enqueue(true);
             }
         }
+
         /// <summary>
         /// 在主线程中再调用回调
         /// </summary>
@@ -155,12 +167,12 @@ namespace Network
                 }
             }
 
-            lock(mConnectResultQueue)
+            lock (mConnectResultQueue)
             {
-                while(mConnectResultQueue.Count > 0)
+                while (mConnectResultQueue.Count > 0)
                 {
                     bool result = mConnectResultQueue.Dequeue();
-                    if(result)
+                    if (result)
                     {
                         if (onConnect != null) onConnect();
                     }
@@ -180,8 +192,6 @@ namespace Network
 
                 mDebugMessageList.Clear();
             }
-
-           
         }
 
         void OnReceive(MessageBuffer message)
@@ -190,12 +200,13 @@ namespace Network
             {
                 return;
             }
+
             lock (mReceiveMessageQueue)
             {
                 mReceiveMessageQueue.Enqueue(message);
             }
         }
-  
+
 
         public void Disconnect()
         {
@@ -203,11 +214,13 @@ namespace Network
             {
                 mTcp.Close();
             }
+
             if (mUdp != null)
             {
                 mUdp.Close();
             }
-            if(mKcp!=null)
+
+            if (mKcp != null)
             {
                 mKcp.Close();
             }
@@ -215,10 +228,11 @@ namespace Network
 
         public void SendUdp(MessageBuffer msg)
         {
-            if(msg == null)
+            if (msg == null)
             {
                 return;
             }
+
             if (mKcp != null)
             {
                 mKcp.Send(msg);
@@ -235,11 +249,10 @@ namespace Network
             {
                 return;
             }
+
             mTcp.Send(msg);
         }
 
-       
-       
 
         public static long Ping(IPEndPoint ip)
         {
@@ -261,4 +274,3 @@ namespace Network
         }
     }
 }
-

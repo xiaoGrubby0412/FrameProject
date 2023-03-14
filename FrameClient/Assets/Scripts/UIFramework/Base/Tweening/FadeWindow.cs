@@ -4,13 +4,17 @@ using UnityEngine;
 
 public class FadeWindow : BaseWindow
 {
-    private  float mDuration = 1f;
+    private float mDuration = 1f;
 
-    public float duration { get {
-            if(mDuration<0)
+    public float duration
+    {
+        get
+        {
+            if (mDuration < 0)
             {
                 mDuration = 1;
             }
+
             return mDuration;
         }
         set { mDuration = value; }
@@ -25,11 +29,11 @@ public class FadeWindow : BaseWindow
 
         tween.from = tween.value;
         tween.to = 1;
-        tween.duration = tween.value == 0 ?duration: tween.value * duration / 1f;
+        tween.duration = tween.value == 0 ? duration : tween.value * duration / 1f;
 
 
         tween.onFinished.Clear();
-        tween.onFinished.Add(new EventDelegate(delegate () { base.OnResume(); }));
+        tween.onFinished.Add(new EventDelegate(delegate() { base.OnResume(); }));
         tween.ResetToBeginning();
         tween.PlayForward();
     }
@@ -42,10 +46,10 @@ public class FadeWindow : BaseWindow
         tween.value = tween.tweenFactor > 0 ? tween.value : 0;
         tween.from = tween.value;
         tween.to = 0;
-        tween.duration = tween.value == 1 ? duration : (1 - tween.value) * duration / 1f ;
+        tween.duration = tween.value == 1 ? duration : (1 - tween.value) * duration / 1f;
 
         tween.onFinished.Clear();
-        tween.onFinished.Add(new EventDelegate(delegate () { base.OnPause(); }));
+        tween.onFinished.Add(new EventDelegate(delegate() { base.OnPause(); }));
         tween.ResetToBeginning();
 
         tween.PlayForward();
@@ -63,10 +67,9 @@ public class FadeWindow : BaseWindow
 
 
         tween.onFinished.Clear();
-        tween.onFinished.Add(new EventDelegate(delegate () { base.OnExit(); }));
+        tween.onFinished.Add(new EventDelegate(delegate() { base.OnExit(); }));
         tween.ResetToBeginning();
 
         tween.PlayForward();
     }
 }
-

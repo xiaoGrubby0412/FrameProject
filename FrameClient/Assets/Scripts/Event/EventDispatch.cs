@@ -6,11 +6,12 @@ public static class EventDispatch
 {
     static Dispatcher mDispatcher = new Dispatcher();
 
-    public static bool RegisterReceiver<T>(EventID varEventID, Action<T> action) 
+    public static bool RegisterReceiver<T>(EventID varEventID, Action<T> action)
     {
         return mDispatcher.RegisterReceiver((int)varEventID, action);
     }
-    public static void UnRegisterReceiver<T>(EventID varEventID, Action<T> action) 
+
+    public static void UnRegisterReceiver<T>(EventID varEventID, Action<T> action)
     {
         mDispatcher.UnRegisterReceiver((int)varEventID, action);
     }
@@ -30,5 +31,3 @@ public static class EventDispatch
         mDispatcher.Clear();
     }
 }
-
-

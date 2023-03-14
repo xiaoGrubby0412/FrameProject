@@ -23,14 +23,18 @@ namespace Network
         public event OnDisconnectHandler onDisconnect;
         public event OnExceptionHandler onException;
 
-        public TcpService(Client service):base()
+        public TcpService(Client service) : base()
         {
             mService = service;
         }
 
-        public bool IsConnected { get { return Client!=null && Connected; } }
+        public bool IsConnected
+        {
+            get { return Client != null && Connected; }
+        }
 
         private int mConnectTimes = 0;
+
         public new bool Connect(string ip, int port)
         {
             if (IsConnected)
@@ -40,7 +44,7 @@ namespace Network
 
             mIP = IPAddress.Parse(ip);
             mPort = port;
-           
+
 
             BeginConnect(mIP, mPort, ConnectResult, this);
 
@@ -53,6 +57,7 @@ namespace Network
             {
                 return;
             }
+
             lock (mSendMessageQueue)
             {
                 mSendMessageQueue.Enqueue(message);
@@ -67,7 +72,7 @@ namespace Network
 
                 if (result.IsCompleted == false)
                 {
-                    if(mConnectTimes < 5)
+                    if (mConnectTimes < 5)
                     {
                         BeginConnect(mIP, mPort, ConnectResult, this);
                     }
@@ -87,7 +92,7 @@ namespace Network
                     Close();
                     return;
                 }
-                
+
                 mReceiveThread = new Thread(ReceiveThread);
                 mSendThread = new Thread(SendThread);
                 mActiveThread = new Thread(ActiveThread);
@@ -107,7 +112,6 @@ namespace Network
                 Close();
                 throw e;
             }
-
         }
 
         public new void Close()
@@ -116,6 +120,7 @@ namespace Network
             {
                 GetStream().Close();
             }
+
             base.Close();
 
             if (mReceiveThread != null)
@@ -123,18 +128,19 @@ namespace Network
                 mReceiveThread.Abort();
                 mReceiveThread = null;
             }
+
             if (mSendThread != null)
             {
                 mSendThread.Abort();
 
                 mSendThread = null;
             }
+
             if (onDisconnect != null)
             {
                 onDisconnect();
                 onDisconnect = null;
             }
-
         }
 
         void SendThread()
@@ -186,8 +192,8 @@ namespace Network
             {
                 try
                 {
-                  
-                    int receiveSize = Client.Receive(MessageBuffer.head, MessageBuffer.MESSAGE_HEAD_SIZE, SocketFlags.None);
+                    int receiveSize = Client.Receive(MessageBuffer.head, MessageBuffer.MESSAGE_HEAD_SIZE,
+                        SocketFlags.None);
                     if (receiveSize == 0)
                     {
                         continue;
@@ -197,31 +203,35 @@ namespace Network
                     {
                         continue;
                     }
-                  
+
 
                     if (MessageBuffer.IsValid(MessageBuffer.head) == false)
                     {
                         continue;
                     }
-                    int bodySize = 0; 
-                    if(MessageBuffer.Decode(MessageBuffer.head, MessageBuffer.MESSAGE_BODY_SIZE_OFFSET, ref bodySize)==false)
+
+                    int bodySize = 0;
+                    if (MessageBuffer.Decode(MessageBuffer.head, MessageBuffer.MESSAGE_BODY_SIZE_OFFSET,
+                            ref bodySize) == false)
                     {
                         continue;
                     }
 
                     MessageBuffer message = new MessageBuffer(MessageBuffer.MESSAGE_HEAD_SIZE + bodySize);
-                   
+
                     Array.Copy(MessageBuffer.head, 0, message.buffer, 0, MessageBuffer.head.Length);
 
                     if (bodySize > 0)
                     {
-                        int receiveBodySize = Client.Receive(message.buffer, MessageBuffer.MESSAGE_BODY_OFFSET, bodySize, SocketFlags.None);
+                        int receiveBodySize = Client.Receive(message.buffer, MessageBuffer.MESSAGE_BODY_OFFSET,
+                            bodySize, SocketFlags.None);
 
                         if (receiveBodySize != bodySize)
                         {
                             continue;
                         }
                     }
+
                     if (onMessage != null)
                     {
                         onMessage(message);

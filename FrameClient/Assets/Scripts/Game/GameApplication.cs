@@ -2,13 +2,12 @@
 using System.Collections.Generic;
 using Util;
 using Network;
+
 /// <summary>
 /// Current game scene
 /// </summary>
-
-
-public class GameApplication :SingletonMono<GameApplication> {
-
+public class GameApplication : SingletonMono<GameApplication>
+{
     public Mode mode = Mode.LockStep;
     public string ip = "127.0.0.1";
     public int tcpPort = 1255;
@@ -16,48 +15,40 @@ public class GameApplication :SingletonMono<GameApplication> {
     public Protocol protocol = Protocol.UDP;
 
     void Awake()
-	{
-		DontDestroyOnLoad (gameObject);
-	
+    {
+        DontDestroyOnLoad(gameObject);
 
-		WindowManager.GetSingleton();
 
-		SceneMachine.GetSingleton().Init();
+        WindowManager.GetSingleton();
+
+        SceneMachine.GetSingleton().Init();
 
         SceneMachine.GetSingleton().ChangeScene(GameSceneType.FrameScene);
-
     }
-    // Use this for initialization
-    void Start () {
 
-      
+    // Use this for initialization
+    void Start()
+    {
     }
 
 
     // Update is called once per frame
-    void Update () {
-
+    void Update()
+    {
         TimerHeap.Tick();
 
         ClientService.GetSingleton().Update();
 
-        SceneMachine.GetSingleton().OnUpdate ();
+        SceneMachine.GetSingleton().OnUpdate();
 
         PlayerManager.GetSingleton().OnUpdate();
-
-      
-
     }
-	void OnApplicationQuit()
-	{
+
+    void OnApplicationQuit()
+    {
         PlayerManager.GetSingleton().Clear();
         ClientService.GetSingleton().Disconnect();
         SceneMachine.GetSingleton().Destroy();
-		Application.Quit ();
-	}
-
-
-	
-
-
+        Application.Quit();
+    }
 }

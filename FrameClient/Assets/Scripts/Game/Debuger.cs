@@ -1,7 +1,4 @@
-﻿
-
-public class Debuger 
+﻿public class Debuger
 {
-	public const bool ENABLELOG = true;
+    public const bool ENABLELOG = true;
 }
-

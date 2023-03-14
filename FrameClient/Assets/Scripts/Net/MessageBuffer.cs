@@ -6,12 +6,12 @@ namespace Network
     {
         byte[] mBuffer;
 
-        public const int MESSAGE_ID_OFFSET = 0;  //包ID偏移
+        public const int MESSAGE_ID_OFFSET = 0; //包ID偏移
         public const int MESSAGE_BODY_SIZE_OFFSET = 4; //包体大小偏移
-        public const int MESSAGE_VERSION_OFFSET = 8;    //包版本偏移
-        public const int MESSAGE_EXTRA_OFFSET = 12;  //额外数据
+        public const int MESSAGE_VERSION_OFFSET = 8; //包版本偏移
+        public const int MESSAGE_EXTRA_OFFSET = 12; //额外数据
         public const int MESSAGE_BODY_OFFSET = 16; //包体偏移
-        public const int MESSAGE_HEAD_SIZE = 16;//包头大小
+        public const int MESSAGE_HEAD_SIZE = 16; //包头大小
 
         public const int MESSAGE_VERSION = 1;
 
@@ -20,6 +20,7 @@ namespace Network
 
         //定义一个静态的包头
         public static byte[] head = new byte[MESSAGE_HEAD_SIZE];
+
         public static bool IsValid(byte[] buffer)
         {
             if (buffer == null) return false;
@@ -27,14 +28,14 @@ namespace Network
             if (buffer.Length < MESSAGE_HEAD_SIZE) return false;
 
             int messageId = 0;
-            if(Decode(buffer, MESSAGE_ID_OFFSET, ref messageId)==false)
+            if (Decode(buffer, MESSAGE_ID_OFFSET, ref messageId) == false)
             {
                 return false;
             }
 
 
             int version = 0;
-            if(Decode(buffer, MESSAGE_VERSION_OFFSET, ref version) == false)
+            if (Decode(buffer, MESSAGE_VERSION_OFFSET, ref version) == false)
             {
                 return false;
             }
@@ -43,10 +44,11 @@ namespace Network
             {
                 return true;
             }
+
             return false;
         }
 
-        public static bool Decode(byte[] buffer, int offset,ref int value)
+        public static bool Decode(byte[] buffer, int offset, ref int value)
         {
             if (buffer == null || buffer.Length < MESSAGE_HEAD_SIZE || offset + 4 > buffer.Length)
             {
@@ -57,20 +59,15 @@ namespace Network
 
             return true;
         }
+
         public byte[] buffer
         {
-            get
-            {
-                return mBuffer;
-            }
+            get { return mBuffer; }
         }
 
         public int length
         {
-            get
-            {
-                return mBuffer.Length;
-            }
+            get { return mBuffer.Length; }
         }
 
         public MessageBuffer(int length)
@@ -93,8 +90,7 @@ namespace Network
             Buffer.BlockCopy(BitConverter.GetBytes(extra), 0, mBuffer, MESSAGE_EXTRA_OFFSET, 4);
             Buffer.BlockCopy(data, 0, mBuffer, MESSAGE_BODY_OFFSET, data.Length);
         }
-       
-       
+
 
         public bool IsValid()
         {
@@ -133,7 +129,8 @@ namespace Network
                 Buffer.BlockCopy(mBuffer, MESSAGE_BODY_OFFSET, body, 0, bodySize);
                 return body;
             }
+
             return null;
-        }   
+        }
     }
 }

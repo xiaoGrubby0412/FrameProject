@@ -17,7 +17,9 @@ namespace Util
         /// <summary>
         /// 私有构造函数，封闭实例化。
         /// </summary>
-        private TimerHeap() { }
+        private TimerHeap()
+        {
+        }
 
         /// <summary>
         /// 默认构造函数
@@ -131,6 +133,7 @@ namespace Util
                 {
                     break;
                 }
+
                 lock (m_queueLock)
                     m_queue.Dequeue();
                 if (p.NInterval > 0)

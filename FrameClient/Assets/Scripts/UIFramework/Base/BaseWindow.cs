@@ -1,33 +1,46 @@
 ﻿using UnityEngine;
 using System.Collections;
 
-public class BaseWindow : MonoBehaviour {
-
+public class BaseWindow : MonoBehaviour
+{
     private string mPath;
 
     /// <summary>
     /// 界面预设路径
     /// </summary>
-    public string path { get { return mPath; } set { mPath = value; } }
+    public string path
+    {
+        get { return mPath; }
+        set { mPath = value; }
+    }
 
     private bool mPause = false;
-    public bool isPause { get { return mPause; } }
+
+    public bool isPause
+    {
+        get { return mPause; }
+    }
 
     protected WindowType mWindowType = WindowType.Normal;
-    public WindowType windowType { get { return mWindowType; } }
 
-    
+    public WindowType windowType
+    {
+        get { return mWindowType; }
+    }
+
 
     private GameObject mMask;
+
     public GameObject mask
     {
-        get {
+        get
+        {
             if (mMask == null) CreateMask();
             return mMask;
         }
     }
 
-   void CreateMask()
+    void CreateMask()
     {
         GameObject go = new GameObject("Mask");
         go.transform.SetParent(transform);
@@ -40,7 +53,6 @@ public class BaseWindow : MonoBehaviour {
 
         BoxCollider box = go.AddComponent<BoxCollider>();
         box.center = Vector3.zero;
-
     }
 
 
@@ -57,7 +69,6 @@ public class BaseWindow : MonoBehaviour {
     /// </summary>
     public virtual void OnPause()
     {
-       
         mPause = true;
     }
 
@@ -66,7 +77,7 @@ public class BaseWindow : MonoBehaviour {
     /// </summary>
     public virtual void OnResume()
     {
-        mPause = false;     
+        mPause = false;
         transform.SetAsLastSibling();
     }
 

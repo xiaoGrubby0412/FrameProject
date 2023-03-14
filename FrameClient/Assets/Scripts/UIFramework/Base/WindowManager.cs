@@ -10,9 +10,10 @@ public class WindowManager : MonoBehaviour
     public const int DESIGN_HEIGHT = 720;
 
     static WindowManager mInstance;
+
     public static WindowManager GetSingleton()
     {
-        if(mInstance == null)
+        if (mInstance == null)
         {
             GameObject go = new GameObject(typeof(WindowManager).ToString());
             DontDestroyOnLoad(go);
@@ -26,7 +27,7 @@ public class WindowManager : MonoBehaviour
             rectTrans.anchorMin = Vector2.one * 0.5f;
             rectTrans.pivot = Vector2.zero;
             rectTrans.localScale = Vector3.one;
-           
+
 
             mCanvas = canvas.AddComponent<Canvas>();
             mCanvas.renderMode = RenderMode.ScreenSpaceOverlay;
@@ -61,7 +62,11 @@ public class WindowManager : MonoBehaviour
     }
 
     static Canvas mCanvas;
-    public static Canvas canvas { get { return mCanvas; } }
+
+    public static Canvas canvas
+    {
+        get { return mCanvas; }
+    }
 
     public static void SetTouchable(bool touchable)
     {
@@ -112,8 +117,8 @@ public class WindowManager : MonoBehaviour
 
             if (string.IsNullOrEmpty(path) == false)
             {
-                Load(path, (asset) => {
-
+                Load(path, (asset) =>
+                {
                     if (asset)
                     {
                         GameObject go = Instantiate(asset) as GameObject;
@@ -160,7 +165,6 @@ public class WindowManager : MonoBehaviour
                     {
                         SetTouchable(true);
                     }
-
                 });
             }
             else
@@ -192,9 +196,8 @@ public class WindowManager : MonoBehaviour
                         }
                     }
                 }
-                else if(t.windowType == WindowType.Pop)
+                else if (t.windowType == WindowType.Pop)
                 {
-
                 }
                 else
                 {
@@ -222,19 +225,19 @@ public class WindowManager : MonoBehaviour
         }
     }
 
-    public T Get<T>()where T :BaseWindow
+    public T Get<T>() where T : BaseWindow
     {
-        if(mWindowStack == null)
+        if (mWindowStack == null)
         {
             mWindowStack = new Stack<BaseWindow>();
         }
 
         var it = mWindowStack.GetEnumerator();
 
-        while(it.MoveNext())
+        while (it.MoveNext())
         {
             Type type = it.Current.GetType();
-            if(type == typeof(T))
+            if (type == typeof(T))
             {
                 return it.Current as T;
             }
@@ -250,19 +253,19 @@ public class WindowManager : MonoBehaviour
     {
         if (mWindowStack == null) return;
 
-        if(mWindowStack.Count > 0)
+        if (mWindowStack.Count > 0)
         {
             SetTouchable(false);
 
             BaseWindow window = mWindowStack.Pop();
 
-            if(window && window.windowType != WindowType.Root)
+            if (window && window.windowType != WindowType.Root)
             {
                 window.OnExit();
             }
 
-       
-            if(mWindowStack.Count >0)
+
+            if (mWindowStack.Count > 0)
             {
                 window = mWindowStack.Peek();
 
@@ -293,21 +296,21 @@ public class WindowManager : MonoBehaviour
             {
                 BaseWindow window = mWindowStack.Pop();
 
-                if(window)
+                if (window)
                 {
                     window.OnExit();
                 }
             }
         }
 
-        while(mTmpWindowStack.Count>0)
+        while (mTmpWindowStack.Count > 0)
         {
             mWindowStack.Push(mTmpWindowStack.Pop());
         }
 
         if (mWindowStack.Count > 0)
         {
-            BaseWindow  window = mWindowStack.Peek();
+            BaseWindow window = mWindowStack.Peek();
 
             if (window && window.isPause)
             {
@@ -319,25 +322,26 @@ public class WindowManager : MonoBehaviour
     }
 
 
-    private BaseWindow Get(WindowType windowType) 
+    private BaseWindow Get(WindowType windowType)
     {
         var it = mWindowStack.GetEnumerator();
 
-        while(it.MoveNext())
+        while (it.MoveNext())
         {
-            if(it.Current.windowType == windowType)
+            if (it.Current.windowType == windowType)
             {
                 return it.Current;
             }
         }
+
         return null;
     }
 
     private void SetLayer(BaseWindow window)
     {
-        if(window)
+        if (window)
         {
-            if(mWindowStack.Count > 0)
+            if (mWindowStack.Count > 0)
             {
                 BaseWindow t = mWindowStack.Peek();
 
@@ -357,7 +361,7 @@ public class WindowManager : MonoBehaviour
     {
         var it = mWindowStack.GetEnumerator();
 
-        while(it.MoveNext())
+        while (it.MoveNext())
         {
             if (it.Current.isPause == false)
             {
@@ -371,22 +375,22 @@ public class WindowManager : MonoBehaviour
     /// </summary>
     public void Show()
     {
-       if(mWindowStack.Count > 0)
+        if (mWindowStack.Count > 0)
         {
             BaseWindow window = mWindowStack.Peek();
-            if(window && window.isPause)
+            if (window && window.isPause)
             {
                 window.OnResume();
 
-                if(window.windowType == WindowType.Pop)
+                if (window.windowType == WindowType.Pop)
                 {
-                    if(mWindowStack.Count >=2)
+                    if (mWindowStack.Count >= 2)
                     {
                         window = mWindowStack.Pop();
 
                         BaseWindow secondWindow = mWindowStack.Peek();
 
-                        if(secondWindow && secondWindow.isPause)
+                        if (secondWindow && secondWindow.isPause)
                         {
                             secondWindow.OnResume();
                         }
@@ -400,29 +404,25 @@ public class WindowManager : MonoBehaviour
 
     public void CloseAll()
     {
-        while(mWindowStack.Count>0)
+        while (mWindowStack.Count > 0)
         {
             BaseWindow window = mWindowStack.Pop();
 
-            if(window)
+            if (window)
             {
                 window.OnExit();
             }
         }
+
         mWindowStack.Clear();
     }
 
     private void Load(string path, Action<UnityEngine.Object> callback)
     {
-       
         var tmpObject = AssetManager.GetSingleton().Load<UnityEngine.Object>(path);
         if (callback != null)
         {
             callback(tmpObject);
         }
     }
-
-   
-
 }
-

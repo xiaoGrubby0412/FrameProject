@@ -6,7 +6,7 @@ using System.Threading;
 
 namespace Network
 {
-    public class KcpService: UdpClient
+    public class KcpService : UdpClient
     {
         private Client mService;
 
@@ -15,7 +15,10 @@ namespace Network
         private Thread mReceiveThread, mUpdateThread;
 
 
-        public bool IsConnected { get { return Client != null && Client.Connected; } }
+        public bool IsConnected
+        {
+            get { return Client != null && Client.Connected; }
+        }
 
         public event OnConnectHandler onConnect;
         public event OnMessageHandler onMessage;
@@ -28,10 +31,7 @@ namespace Network
 
         private static uint current
         {
-            get
-            {
-                return (uint)(Convert.ToInt64(DateTime.UtcNow.Subtract(utc_time).TotalMilliseconds) & 0xffffffff);
-            }
+            get { return (uint)(Convert.ToInt64(DateTime.UtcNow.Subtract(utc_time).TotalMilliseconds) & 0xffffffff); }
         }
 
         public KcpService(Client service, uint conv)
@@ -39,8 +39,8 @@ namespace Network
             mService = service;
             mKCP = new KCP(conv, OnSendKcp);
             mKCP.NoDelay(1, 10, 2, 1);
-
         }
+
         public new bool Connect(string ip, int port)
         {
             if (IsConnected)
@@ -68,6 +68,7 @@ namespace Network
             {
                 onConnect();
             }
+
             return true;
         }
 
@@ -77,10 +78,12 @@ namespace Network
             {
                 return;
             }
-            if(mKCP == null)
+
+            if (mKCP == null)
             {
                 return;
             }
+
             lock (mKCP)
             {
                 mKCP.Send(message.buffer);
@@ -98,11 +101,11 @@ namespace Network
                 mReceiveThread.Abort();
                 mReceiveThread = null;
             }
+
             if (mUpdateThread != null)
             {
                 mUpdateThread.Abort();
                 mUpdateThread = null;
-
             }
 
             if (onDisconnet != null)
@@ -119,7 +122,6 @@ namespace Network
                 try
                 {
                     UpdateKcp();
-
                 }
                 catch (Exception e)
                 {
@@ -141,9 +143,8 @@ namespace Network
                     byte[] data = Receive(ref ip);
 
                     if (data.Length > 0)
-                    { 
+                    {
                         OnReceiveKcp(data);
-
                     }
                 }
                 catch (Exception e)
@@ -157,6 +158,7 @@ namespace Network
         }
 
         #region KCP
+
         private void OnSendKcp(byte[] data, int length)
         {
             if (IsConnected)
@@ -175,7 +177,6 @@ namespace Network
                     mKCP.Update(time);
                     mNextUpdateTime = mKCP.Check(time);
                 }
-
             }
         }
 
@@ -185,6 +186,7 @@ namespace Network
             {
                 return;
             }
+
             lock (mKCP)
             {
                 mKCP.Input(data);
@@ -201,8 +203,8 @@ namespace Network
                     }
                 }
             }
-
         }
+
         #endregion
     }
 }

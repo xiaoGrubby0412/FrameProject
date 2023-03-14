@@ -9,18 +9,19 @@ namespace Network
         Frame,
     }
 
- 
-    public class ClientService:Singleton<ClientService>
+
+    public class ClientService : Singleton<ClientService>
     {
         private Dictionary<int, Client> mClientDic = new Dictionary<int, Client>();
 
         public event OnDebugHandler onDebug;
 
-        public void Connect(ClientID varClientID, string ip, int tcpPort, int udpPort, OnConnectHandler onConnect, OnDisconnectHandler onDisconnect)
+        public void Connect(ClientID varClientID, string ip, int tcpPort, int udpPort, OnConnectHandler onConnect,
+            OnDisconnectHandler onDisconnect)
         {
             int id = (int)varClientID;
 
-            if(mClientDic.ContainsKey(id))
+            if (mClientDic.ContainsKey(id))
             {
                 Client client = mClientDic[id];
                 mClientDic.Remove(id);
@@ -43,28 +44,30 @@ namespace Network
         public Client GetClient(ClientID clientID)
         {
             int id = (int)clientID;
-            if(mClientDic.ContainsKey(id))
+            if (mClientDic.ContainsKey(id))
             {
                 return mClientDic[id];
             }
+
             return null;
         }
-       
-        
+
+
         public void Update()
         {
             var it = mClientDic.GetEnumerator();
-            while(it.MoveNext())
-            { 
+            while (it.MoveNext())
+            {
                 if (it.Current.Value.IsConnected)
                 {
                     it.Current.Value.Update();
                 }
             }
-            it.Dispose();
-        }    
 
-       
+            it.Dispose();
+        }
+
+
         /// <summary>
         /// 通过UDP发送
         /// </summary>
@@ -75,7 +78,7 @@ namespace Network
         {
             var client = GetClient(clientID);
 
-            if(client== null)
+            if (client == null)
             {
                 return;
             }
@@ -104,11 +107,10 @@ namespace Network
 
             byte[] bytes = ProtoTransfer.SerializeProtoBuf<T>(data);
 
-            MessageBuffer buffer = new MessageBuffer((int)id, bytes,  client.acceptSock);
+            MessageBuffer buffer = new MessageBuffer((int)id, bytes, client.acceptSock);
 
             client.SendTcp(buffer);
         }
-
 
 
         /// <summary>
@@ -116,7 +118,7 @@ namespace Network
         /// </summary>
         public void Disconnect(ClientID clientID)
         {
-            if(mClientDic.ContainsKey((int)clientID))
+            if (mClientDic.ContainsKey((int)clientID))
             {
                 mClientDic.Remove((int)clientID);
                 mClientDic[(int)clientID].Disconnect();
@@ -128,20 +130,21 @@ namespace Network
         /// </summary>
         public void Disconnect()
         {
-            foreach(var  v in mClientDic.Values)
+            foreach (var v in mClientDic.Values)
             {
                 v.Disconnect();
             }
+
             mClientDic.Clear();
         }
 
         private void OnMessage(MessageBuffer msg)
         {
-            if(msg == null)
+            if (msg == null)
             {
                 return;
             }
-                  
+
             MessageDispatch.Dispatch(msg);
         }
     }

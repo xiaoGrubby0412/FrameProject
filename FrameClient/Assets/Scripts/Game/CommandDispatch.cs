@@ -2,7 +2,7 @@
 using System;
 using System.Collections.Generic;
 
-public static class CommandDispatch 
+public static class CommandDispatch
 {
     static Dispatcher mDispatcher = new Dispatcher();
 
@@ -10,6 +10,7 @@ public static class CommandDispatch
     {
         return mDispatcher.RegisterReceiver((int)varCommandID, action);
     }
+
     public static void UnRegisterReceiver<T>(CommandID varCommandID, Action<T> action) where T : class
     {
         mDispatcher.UnRegisterReceiver((int)varCommandID, action);
@@ -17,20 +18,22 @@ public static class CommandDispatch
 
     public static void Dispatch(Command cmd)
     {
-        if(cmd==null)
+        if (cmd == null)
         {
             return;
         }
-        CommandID id =(CommandID)cmd.type;
+
+        CommandID id = (CommandID)cmd.type;
 
         Type type = GetType(id);
 
         object data = cmd.Get(type);
 
-        if (data ==null)
+        if (data == null)
         {
             return;
         }
+
         mDispatcher.Dispatch(cmd.type, data, type);
     }
 
@@ -44,4 +47,3 @@ public static class CommandDispatch
         mDispatcher.Clear();
     }
 }
-

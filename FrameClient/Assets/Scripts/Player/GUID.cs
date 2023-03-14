@@ -16,5 +16,3 @@ public class GUID
         return BitConverter.ToInt32(buffer, 0);
     }
 }
-
-

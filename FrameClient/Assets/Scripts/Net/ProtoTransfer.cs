@@ -28,10 +28,11 @@ namespace Network
 
         public static T DeserializeProtoBuf<T>(byte[] data) where T : class, ProtoBuf.IExtensible
         {
-            if(data ==null)
+            if (data == null)
             {
                 return null;
             }
+
             using (MemoryStream ms = new MemoryStream(data))
             {
                 T t = ProtoBuf.Serializer.Deserialize<T>(ms);
@@ -105,7 +106,7 @@ namespace Network
             o.attackSpeedPercent = info.attackSpeedPercent;
             o.maxBlood = info.maxBlood;
             o.nowBlood = info.nowBlood;
-            o.type =info.type;
+            o.type = info.type;
 
             return o;
         }

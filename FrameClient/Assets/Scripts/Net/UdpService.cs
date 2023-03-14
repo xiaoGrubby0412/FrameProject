@@ -17,13 +17,15 @@ namespace Network
         private Thread mReceiveThread, mSendThread;
 
 
-        public bool IsConnected { get { return Client != null && Client.Connected; } }
+        public bool IsConnected
+        {
+            get { return Client != null && Client.Connected; }
+        }
 
         public event OnConnectHandler onConnect;
         public event OnMessageHandler onMessage;
         public event OnDisconnectHandler onDisconnet;
         public event OnExceptionHandler onException;
-
 
 
         public UdpService(Client service)
@@ -59,6 +61,7 @@ namespace Network
             {
                 onConnect();
             }
+
             return true;
         }
 
@@ -73,7 +76,6 @@ namespace Network
             {
                 mSendMessageQueue.Enqueue(message);
             }
-
         }
 
         public new void Close()
@@ -85,11 +87,11 @@ namespace Network
                 mReceiveThread.Abort();
                 mReceiveThread = null;
             }
+
             if (mSendThread != null)
             {
                 mSendThread.Abort();
                 mSendThread = null;
-
             }
 
             if (onDisconnet != null)
@@ -105,7 +107,6 @@ namespace Network
             {
                 try
                 {
-
                     lock (mSendMessageQueue)
                     {
                         while (mSendMessageQueue.Count > 0)
@@ -115,9 +116,9 @@ namespace Network
 
                             int ret = Send(message.buffer, message.length);
                         }
+
                         mSendMessageQueue.Clear();
                     }
-
                 }
                 catch (Exception e)
                 {

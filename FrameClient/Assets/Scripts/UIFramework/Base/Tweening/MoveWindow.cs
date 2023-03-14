@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using UnityEngine;
+
 public class MoveWindow : BaseWindow
 {
     public enum Pivot
@@ -26,12 +27,14 @@ public class MoveWindow : BaseWindow
             {
                 mDuration = 1;
             }
+
             return mDuration;
         }
         set { mDuration = value; }
     }
 
     protected Pivot mPivot;
+
     public Pivot pivot
     {
         get { return mPivot; }
@@ -41,52 +44,55 @@ public class MoveWindow : BaseWindow
     {
         Vector3 pos = Vector3.zero;
 
-       
-    
 
-        switch(pivot)
+        switch (pivot)
         {
             case Pivot.Top:
-                {
-                    pos.y = Screen.height;
-                }break;
+            {
+                pos.y = Screen.height;
+            }
+                break;
             case Pivot.Bottom:
-                {
-                    pos.y = -Screen.height;
-                }break;
+            {
+                pos.y = -Screen.height;
+            }
+                break;
             case Pivot.Left:
-                {
-                    pos.x = -Screen.width;
-                }break;
+            {
+                pos.x = -Screen.width;
+            }
+                break;
             case Pivot.Right:
-                {
-                    pos.x = Screen.width;
-                }
+            {
+                pos.x = Screen.width;
+            }
                 break;
             case Pivot.TopLeft:
-                {
-                    pos.x = -Screen.width;
-                    pos.y = Screen.height;
-                }break;
+            {
+                pos.x = -Screen.width;
+                pos.y = Screen.height;
+            }
+                break;
             case Pivot.TopRight:
-                {
-                    pos.x = Screen.width;
-                    pos.y = Screen.height;
-                }
+            {
+                pos.x = Screen.width;
+                pos.y = Screen.height;
+            }
                 break;
             case Pivot.BottomLeft:
-                {
-                    pos.x = -Screen.width;
-                    pos.y = -Screen.height;
-                }
+            {
+                pos.x = -Screen.width;
+                pos.y = -Screen.height;
+            }
                 break;
             case Pivot.BottomRight:
-                {
-                    pos.x = Screen.width;
-                    pos.y = -Screen.height;
-                }
+            {
+                pos.x = Screen.width;
+                pos.y = -Screen.height;
+            }
                 break;
         }
+
         return pos;
     }
 
@@ -110,7 +116,7 @@ public class MoveWindow : BaseWindow
 
         tween.from = tween.value;
         tween.to = Vector3.zero;
-        tween.duration = tween.value == from? duration : (from - tween.value).magnitude * duration / from.magnitude ;
+        tween.duration = tween.value == from ? duration : (from - tween.value).magnitude * duration / from.magnitude;
 
 
         tween.onFinished.Clear();
@@ -122,7 +128,6 @@ public class MoveWindow : BaseWindow
 
     public override void OnPause()
     {
-
         TweenPosition tween = GetComponent<TweenPosition>();
         if (tween == null) tween = gameObject.AddComponent<TweenPosition>();
 
@@ -135,7 +140,7 @@ public class MoveWindow : BaseWindow
 
         tween.onFinished.Clear();
 
-        tween.onFinished.Add(new EventDelegate(delegate () { base.OnPause(); }));
+        tween.onFinished.Add(new EventDelegate(delegate() { base.OnPause(); }));
 
         tween.ResetToBeginning();
 
@@ -157,11 +162,10 @@ public class MoveWindow : BaseWindow
 
         tween.onFinished.Clear();
 
-        tween.onFinished.Add(new EventDelegate(delegate () { base.OnExit(); }));
+        tween.onFinished.Add(new EventDelegate(delegate() { base.OnExit(); }));
 
         tween.ResetToBeginning();
 
         tween.PlayForward();
     }
 }
-

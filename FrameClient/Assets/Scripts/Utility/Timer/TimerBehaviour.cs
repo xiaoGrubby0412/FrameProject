@@ -5,16 +5,17 @@ using System;
 public class TimerBehaviour : MonoBehaviour
 {
     private uint m_seconds = 0;
-    private Action<uint> m_onTimer  = null;
+    private Action<uint> m_onTimer = null;
     private Action m_callback = null;
-    public void StartTimer(uint seconds, Action<uint> onTimer,Action callback)
+
+    public void StartTimer(uint seconds, Action<uint> onTimer, Action callback)
     {
         m_seconds = seconds;
         m_onTimer = onTimer;
         m_callback = callback;
 
-        
-        if (m_seconds>0)
+
+        if (m_seconds > 0)
         {
             StartTimer();
         }
@@ -30,7 +31,7 @@ public class TimerBehaviour : MonoBehaviour
 
     public uint GetSeconds()
     {
-       return m_seconds;
+        return m_seconds;
     }
 
     private bool timerIsActive = false;
@@ -41,6 +42,7 @@ public class TimerBehaviour : MonoBehaviour
         timerIsActive = true;
         timeActive = 0f;
     }
+
     public void StopTimer()
     {
         timerIsActive = false;
@@ -52,15 +54,15 @@ public class TimerBehaviour : MonoBehaviour
     {
         if (timerIsActive)
         {
-            timeActive += Time.deltaTime*1000;
+            timeActive += Time.deltaTime * 1000;
             //Mogo.Util.LoggerHelper.Debug(timeActive);
             if (timeActive > 1000)
             {
                 timeActive = 0f;
                 m_seconds--;
-                if (m_seconds>0)
+                if (m_seconds > 0)
                 {
-                    if (m_onTimer!=null)
+                    if (m_onTimer != null)
                     {
                         m_onTimer(m_seconds);
                     }
@@ -74,7 +76,6 @@ public class TimerBehaviour : MonoBehaviour
                     }
                 }
             }
-            
         }
     }
 
@@ -87,6 +88,7 @@ public class TimerBehaviour : MonoBehaviour
     {
         return timeActive.ToString("00.00");
     }
+
     public bool IsTimerRunning()
     {
         return timerIsActive;
@@ -96,7 +98,6 @@ public class TimerBehaviour : MonoBehaviour
     {
         if (IsTimerRunning())
         {
-            
             StopTimer();
         }
     }
